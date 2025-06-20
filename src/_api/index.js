@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "https://simponi.karyakreasi.id";
+const url = "https://simponi.karyakreasi.id ";
 
 export const API = axios.create({
   baseURL: `${url}/api`,
