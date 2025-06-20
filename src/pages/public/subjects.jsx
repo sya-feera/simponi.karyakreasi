@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
-import { getSubject, showSubject,} from "../../../../../Frontend-New/Frontend/src/_services/subject";
+import { getSubject, showSubject,} from "../../_services/subject";
 
 const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
