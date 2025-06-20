@@ -903,9 +903,9 @@ const Grades = ({ santrisList = [], subjectsList = [] }) => {
               <tbody>
                 {gradesList.map((grade) => (
                   <tr key={grade.id}>
-                    <td>{getSantriName(grade.santri_id)}</td>
-                    <td>{getSubjectName(grade.subject_id)}</td>
-                    <td>{getSubjectJenjang(grade.subject_id)}</td>
+                    <td>{getSantriName(grade.santri?.name)}</td>
+                    <td>{getSubjectName(grade.subject?.name)}</td>
+                    <td>{getSubjectJenjang(grade.subject?.jenjang)}</td>
                     <td>
                       <span
                         className={`grade-badge ${getGradeColor(grade.grade)}`}
