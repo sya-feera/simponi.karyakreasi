@@ -1,10 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { logout } from "../_services/auth";
 
 export default function Header() {
   const location = useLocation();
-  // const navigate = useNavigate();
+  const navigate = useNavigate(); // aktifkan navigate
 
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -13,10 +13,10 @@ export default function Header() {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
-    const storedUser = localStorage.getItem("userProfile");
+    const storedUser = localStorage.getItem("userProfile"); // perbaiki key
     setToken(storedToken);
     setUserInfo(storedUser ? JSON.parse(storedUser) : null);
-  }, [location]); // update saat route berubah
+  }, [location]);
 
   const hiddenLoginPaths = [
     "/santri", "/mudaris", "/penjadwalan", "/kamar",
@@ -24,27 +24,26 @@ export default function Header() {
   ];
 
   const toggleDataDropdown = () => {
-    setIsDataOpen((prev) => !prev);
+    setIsDataOpen(prev => !prev);
     setIsAsramaOpen(false);
   };
 
   const toggleAsramaDropdown = () => {
-    setIsAsramaOpen((prev) => !prev);
+    setIsAsramaOpen(prev => !prev);
     setIsDataOpen(false);
   };
 
   const handleLogout = async () => {
     try {
-      await logout({ token });
+      await logout({ token }); // panggil API jika ada
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("userInfo");
-      window.location.href = "/login"; // lebih cepat dan pasti
+      localStorage.removeItem("userProfile");
+      navigate("/login"); // ganti window.location.href dengan navigate
     }
   };
-  
 
   return (
     <header className="sticky-top bg-white w-100">

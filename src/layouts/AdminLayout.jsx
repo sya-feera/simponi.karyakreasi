@@ -24,9 +24,11 @@ const AdminLayout = ({ children, currentPage }) => {
 
   useEffect(() => {
     if (!token || !decodeData?.success || userInfo?.role !== "mudaris") {
-      window.location.href = "/login"; // paksa redirect kalau token invalid
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userProfile");
+      navigate("/login"); // pakai navigate bukan window
     }
-  }, [token, decodeData, userInfo]);
+  }, [token, decodeData, userInfo, navigate]);
 
   return (
     <div className="app-layout" style={{ display: 'flex' }}>
@@ -52,14 +54,21 @@ const AdminLayout = ({ children, currentPage }) => {
 const Sidebar = ({ currentPage, isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const token = localStorage.getItem("accessToken");
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (window.confirm('Yakin ingin logout?')) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userInfo");
-      window.location.href = "/login"; // ganti navigate dengan redirect paksa
+      try {
+        await logout({ token }); // jika ada API logout
+      } catch (err) {
+        console.error("Logout error:", err);
+      } finally {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userProfile");
+        navigate("/login"); // pakai navigate, bukan window.location
+      }
     }
   };
 
