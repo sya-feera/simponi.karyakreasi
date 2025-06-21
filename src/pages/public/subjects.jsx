@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
-import { getSubject, showSubject,} from "../../_services/subject";
 import { getGrades } from "../../_services/grades";
 
 const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -28,7 +27,7 @@ export default function Penjadwalan() {
   }, []);
 
   useEffect(() => {
-    const jadwal = subjects.map((grade) => ({
+    const jadwal = grades.map((grade) => ({
       id: grade.subject?.id,
       name: grade.subject?.name,
       day: grade.subject?.day,
@@ -55,10 +54,10 @@ export default function Penjadwalan() {
   //   console.log(kelasOptions);
 
   const filteredSubjects = grades.filter(
-    (s) =>
-      s.subject?.day === selectedDay &&
-      (filterKelas === "" || s.subject?.classroom?.name === filterKelas) &&
-      (s.subject?.name || "").toLowerCase().includes(searchKeyword.toLowerCase())
+    (grade) =>
+      grade.subject?.day === selectedDay &&
+      (filterKelas === "" || grade.subject?.classroom?.name === filterKelas) &&
+      (grade.subject?.name || "").toLowerCase().includes(searchKeyword.toLowerCase())
   );  
 
   return (
