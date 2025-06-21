@@ -512,7 +512,6 @@ export default function AdminSantri() {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>User ID</th>
                   <th>Nama</th>
                   <th>Tanggal Lahir</th>
                   <th>Alamat</th>
