@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
 import { getSubject, showSubject,} from "../../_services/subject";
+import { getGrades } from "../../_services/grades";
 
 const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -10,13 +11,13 @@ export default function Penjadwalan() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isHovered, setIsHovered] = useState(false);
 
-  const [subjects, setSubjects] = useState([]);
+  const [grades, setGrades] = useState([]);
 
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const data = await getSubject(); // hasilnya = data.data
-        setSubjects(data);
+        const data = await getGrades(); // hasilnya = data.data
+        setGrades(data);
         // console.log(data);
       } catch (error) {
         console.error("Gagal ambil data subject:", error);
@@ -27,37 +28,37 @@ export default function Penjadwalan() {
   }, []);
 
   useEffect(() => {
-    const jadwal = subjects.map((subject) => ({
-      id: subject.id,
-      name: subject.name,
-      day: subject.day,
-      year: subject.year,
-      classroom: subject.classroom.location,
-      mudaris: subject.mudaris.name,
-      kelas: subject.kelas,
-      time: subject.time,
+    const jadwal = subjects.map((grade) => ({
+      id: grade.subject?.id,
+      name: grade.subject?.name,
+      day: grade.subject?.day,
+      year: grade.subject?.year,
+      classroom: grade.subject?.classroom?.location,
+      mudaris: grade.subject?.mudaris?.name,
+      kelas: grade.subject?.kelas,
+      time: grade.subject?.time,
     }));
     // console.log(jadwal);
-  }, [subjects]);
+  }, [grades]);
 
-  const PanjangJadwal = subjects.length;
+  const PanjangJadwal = grades.length;
   //   console.log(PanjangJadwal);
 
   const uniqueClassroom = [
-    ...new Set(subjects.map((subject) => subject.classroom.name)),
+    ...new Set(grades.map((grade) => grade.subject?.classroom?.name)),
   ];
   //   console.log(uniqueClassroom);
 
   const kelasOptions = [
-    ...new Set(subjects.map((subject) => subject.classroom?.name)),
+    ...new Set(grades.map((grade) => grade.subject?.classroom?.name)),
   ];
   //   console.log(kelasOptions);
 
-  const filteredSubjects = subjects.filter(
+  const filteredSubjects = grades.filter(
     (s) =>
-      s.day === selectedDay &&
-      (filterKelas === "" || s.classroom?.name === filterKelas) &&
-      (s.name || "").toLowerCase().includes(searchKeyword.toLowerCase())
+      s.subject?.day === selectedDay &&
+      (filterKelas === "" || s.subject?.classroom?.name === filterKelas) &&
+      (s.subject?.name || "").toLowerCase().includes(searchKeyword.toLowerCase())
   );  
 
   return (
@@ -254,7 +255,7 @@ export default function Penjadwalan() {
                   </thead>
                   <tbody>
                     {filteredSubjects.length > 0 ? (
-                      filteredSubjects.map((subject, index) => (
+                      filteredSubjects.map((grade, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>
@@ -271,13 +272,13 @@ export default function Penjadwalan() {
                                   style={{ color: "#666" }}
                                 ></i>
                               </div>
-                              <span>{subject.name}</span>
+                              <span>{grade.subject?.name}</span>
                             </div>
                           </td>
                           <td>
                             <span className="badge bg-light text-dark border">
                               <i className="bi bi-clock me-1"></i>
-                              {subject.time}
+                              {grade.subject?.time}
                             </span>
                           </td>
                           <td>
@@ -288,16 +289,16 @@ export default function Penjadwalan() {
                                 color: "#000",
                               }}
                             >
-                              {subject.classroom?.name}
+                              {grade.subject?.classroom?.name}
                             </span>
                           </td>
                           <td>
                             <i className="bi bi-geo-alt me-1 text-muted"></i>
-                            {subject.classroom?.location}
+                            {grade.subject?.classroom?.location}
                           </td>
                           <td>
                             <i className="bi bi-person me-1 text-muted"></i>
-                            {subject.mudaris?.name}
+                            {grade.subject?.mudaris?.name}
                           </td>
                         </tr>
                       ))

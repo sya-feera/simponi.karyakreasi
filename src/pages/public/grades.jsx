@@ -14,12 +14,9 @@ export default function PublicGrades() {
                   const [gradeData] = await Promise.all([
                     getGrades(),
                   ])
-            
-                  setGrades(gradeData)
-            
+                  setGrades(gradeData)            
                 }
                 fetchData()
-            
               }, [])
     const handleShowGrades = () => {
         setShowGrades(true);
