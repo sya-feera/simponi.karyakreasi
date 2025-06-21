@@ -10,7 +10,7 @@ export default function PublicGrades() {
   const userRole = userInfo?.role || "";
   const santriName = userRole === "mudaris"
   ? "ustadz"
-  : grades.map((grade) => grade.santri?.name || "-").join(", ");
+  : (grades.map((grade) => grade.santri?.name || "-").join(", "));
   useEffect(() => {
     const fetchData = async () => {
       const [gradeData] = await Promise.all([getGrades()]);
