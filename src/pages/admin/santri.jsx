@@ -525,7 +525,6 @@ export default function AdminSantri() {
                 {santriList.map(santri => (
                   <tr key={santri.id}>
                     <td>{santri.id}</td>
-                    <td>{santri.id}</td>
                     <td>{santri.name}</td>
                     <td>{new Date(santri.tgl_lahir).toLocaleDateString('id-ID')}</td>
                     <td>{santri.address}</td>
