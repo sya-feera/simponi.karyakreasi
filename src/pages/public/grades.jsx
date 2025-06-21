@@ -8,14 +8,9 @@ export default function PublicGrades() {
   const [isHovered, setIsHovered] = useState(false);
   const userInfo = JSON.parse(localStorage.getItem("userProfile") || "{}");
   const userRole = userInfo?.role || "";
-  const santriName = grades
-    .map((grade) => {
-      if (userRole === "mudaris") {
-        return "ustadz";
-      }
-      return grade.santri?.name || "-";
-    })
-    .join(", ");
+  const santriName = userRole === "mudaris"
+  ? "ustadz"
+  : grades.map((grade) => grade.santri?.name || "-").join(", ");
   useEffect(() => {
     const fetchData = async () => {
       const [gradeData] = await Promise.all([getGrades()]);
