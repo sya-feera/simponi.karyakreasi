@@ -65,11 +65,18 @@ export default function Subjects() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.year || formData.year < 2020 || formData.year > 2030) {
+      alert("Tahun ajaran harus antara 2020 - 2030");
+      return;
+    }
+
     try {
       if (isEditing) {
         await updateSubject(editId, { ...formData, _method: "PUT" });
+        alert("Berhasil memperbarui jadwal");
       } else {
         await createSubject(formData);
+        alert("Berhasil menambahkan jadwal");
       }
 
       // refresh data
@@ -565,7 +572,6 @@ export default function Subjects() {
                   <option value="Rabu">Rabu</option>
                   <option value="Kamis">Kamis</option>
                   <option value="Jumat">Jumat</option>
-                  <option value="Sabtu">Sabtu</option>
                 </select>
               </div>
               
@@ -577,7 +583,7 @@ export default function Subjects() {
                   name="year" 
                   value={formData.year} 
                   onChange={handleChange} 
-                  placeholder="2024"
+                  placeholder="2025"
                   min="2020"
                   max="2030"
                   required 
@@ -586,14 +592,17 @@ export default function Subjects() {
 
               <div className="form-group">
                 <label htmlFor="jenjang">Jenjang</label>
-                <input
+                <select
                   id="jenjang"
                   name="jenjang"
                   value={formData.jenjang}
                   onChange={handleChange}
-                  placeholder="Masukkan Jenjang" 
                   required
-                />
+                >
+                  <option value="">---Pilih Jenjang---</option>
+                  <option value="Aliyah">Aliyah</option>
+                  <option value="Tsanawiyah">Tsanawiyah</option>
+                </select>
               </div>
               
               <div className="form-group">
@@ -655,13 +664,24 @@ export default function Subjects() {
                 </tr>
               </thead>
               <tbody>
-                {subjects.map(subject => (
+                 {subjects.length === 0 ? (
+                <tr>
+                  <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
+                    Belum ada data jadwal.
+                  </td>
+                </tr>
+              ) : (
+                subjects.map(subject => (
                   <tr key={subject.id}>
                     <td>{subject.id}</td>
                     <td>{subject.name}</td>
                     <td>{subject.day}</td>
                     <td>{subject.year}</td>
-                    <td>{subject.jenjang}</td>
+                    <td>
+                      <span className="subject-badge subject-default">
+                        {subject.jenjang}
+                      </span>
+                    </td>
                     <td>{getClassroomName(subject.classroom_id)}</td>
                     <td>{getMudarisName(subject.mudaris_id)}</td>
                     <td>
@@ -683,7 +703,8 @@ export default function Subjects() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
             </tbody>
             </table>
           </div>

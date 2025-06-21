@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
 import { getGrades } from "../../_services/grades";
 
-const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
 
 export default function Penjadwalan() {
   const [selectedDay, setSelectedDay] = useState("Senin");
