@@ -4,18 +4,20 @@ import { logout } from "../_services/auth";
 
 export default function Header() {
   const location = useLocation();
-  const navigate = useNavigate(); // aktifkan navigate
+  const navigate = useNavigate();
 
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [isDataOpen, setIsDataOpen] = useState(false);
   const [isAsramaOpen, setIsAsramaOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
-    const storedUser = localStorage.getItem("userProfile"); // perbaiki key
+    const storedUser = localStorage.getItem("userProfile");
     setToken(storedToken);
     setUserInfo(storedUser ? JSON.parse(storedUser) : null);
+    setIsSidebarOpen(false);
   }, [location]);
 
   const hiddenLoginPaths = [
@@ -33,15 +35,21 @@ export default function Header() {
     setIsDataOpen(false);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(prev => !prev);
+    setIsDataOpen(false);
+    setIsAsramaOpen(false);
+  };
+
   const handleLogout = async () => {
     try {
-      await logout({ token }); // panggil API jika ada
+      await logout({ token });
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userProfile");
-      navigate("/login"); // ganti window.location.href dengan navigate
+      navigate("/login");
     }
   };
 
@@ -69,11 +77,15 @@ export default function Header() {
             </div>
           </Link>
 
-          <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <button
+            className="navbar-toggler border-0"
+            type="button"
+            onClick={toggleSidebar} // GUNAKAN toggleSidebar
+          >
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarNav">
+          <div className={`collapse navbar-collapse ${isSidebarOpen ? "show" : ""}`} id="navbarNav">
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
                 <Link to="/" className="nav-link px-3 fw-medium">Home</Link>
@@ -116,7 +128,7 @@ export default function Header() {
               </li>
             </ul>
 
-            <div className="d-flex gap-3 align-items-center">
+            <div className="d-flex gap-3 align-items-center mt-3 mt-lg-0">
               {token && userInfo ? (
                 <>
                   <Link to="/account" className="btn btn-outline-secondary rounded-pill px-3">
