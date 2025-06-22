@@ -653,7 +653,7 @@ export default function Subjects() {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>No</th>
                   <th>Mata Pelajaran</th>
                   <th>Hari</th>
                   <th>Tahun</th>
