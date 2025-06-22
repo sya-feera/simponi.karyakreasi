@@ -703,6 +703,7 @@ export default function Dorms() {
                 <table>
                   <thead>
                     <tr>
+                      <th>No</th>
                       <th>Nama Asrama</th>
                       <th>Kapasitas</th>
                       <th>Mudaris</th>
@@ -710,8 +711,9 @@ export default function Dorms() {
                     </tr>
                   </thead>
                   <tbody>
-                {dorms.map((dorm) => (
+                {dorms.map((dorm, index) => (
                   <tr key={dorm.id}>
+                    <td>{index + 1}</td>
                     <td>{dorm.name}</td>
                     <td>{dorm.capacity}</td>
                     <td>{getMudarisName(dorm.mudaris_id)}</td>

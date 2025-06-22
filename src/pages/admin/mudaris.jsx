@@ -706,7 +706,7 @@ const Mudaris = () => {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>No</th>
                   <th>Nama Lengkap</th>
                   <th>Alamat</th>
                   <th>No. Handphone</th>
@@ -715,9 +715,9 @@ const Mudaris = () => {
                 </tr>
               </thead>
               <tbody>
-                {mudarisList.map((mudaris) => (
+                {mudarisList.map((mudaris, index) => (
                   <tr key={mudaris.id}>
-                    <td>{mudaris.id}</td>
+                    <td>{index + 1}</td>
                     <td>{mudaris.name}</td>
                     <td>{mudaris.address}</td>
                     <td>{mudaris.no_hp}</td>

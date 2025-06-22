@@ -671,9 +671,9 @@ export default function Subjects() {
                   </td>
                 </tr>
               ) : (
-                subjects.map(subject => (
+                subjects.map((subject, index) => (
                   <tr key={subject.id}>
-                    <td>{subject.id}</td>
+                    <td>{index + 1}</td>
                     <td>{subject.name}</td>
                     <td>{subject.day}</td>
                     <td>{subject.year}</td>

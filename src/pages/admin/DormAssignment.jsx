@@ -817,7 +817,7 @@ export default function DormAssignment() {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>No</th>
                   <th>Santri</th>
                   <th>Asrama</th>
                   <th>Tanggal Masuk</th>
@@ -826,9 +826,9 @@ export default function DormAssignment() {
                 </tr>
               </thead>
               <tbody>
-                {assignments.map((a) => (
+                {assignments.map((a, index) => (
                   <tr key={a.id}>
-                    <td>{a.id}</td>
+                    <td>{index + 1}</td>
                     <td>{getSantriName(a.santri_id)}</td>
                     <td>{getDormName(a.dorm_id)}</td>
                     <td>{a.entry_date}</td>

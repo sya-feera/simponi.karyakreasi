@@ -891,6 +891,7 @@ const Grades = ({ santrisList = [], subjectsList = [] }) => {
             <table>
               <thead>
                 <tr>
+                  <th>No</th>
                   <th>Nama Santri</th>
                   <th>Mata Pelajaran</th>
                   <th>jenjang</th>
@@ -901,8 +902,9 @@ const Grades = ({ santrisList = [], subjectsList = [] }) => {
                 </tr>
               </thead>
               <tbody>
-                {gradesList.map((grade) => (
+                {gradesList.map((grade, index) => (
                   <tr key={grade.id}>
+                    <td>{index + 1}</td>
                     <td>{getSantriName(grade.santri_id)}</td>
                     <td>{getSubjectName(grade.subject_id)}</td>
                     <td>{getSubjectJenjang(grade.subject_id)}</td>

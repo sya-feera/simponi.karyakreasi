@@ -690,16 +690,16 @@ const Classrooms = () => {
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>No</th>
                   <th>Nama Ruang Kelas</th>
                   <th>Lokasi</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
-                {classroomsList.map((classroom) => (
+                {classroomsList.map((classroom, index) => (
                   <tr key={classroom.id}>
-                    <td>{classroom.id}</td>
+                    <td>{index + 1}</td>
                     <td>{classroom.name}</td>
                     <td>{classroom.location}</td>
                     <td className="action-buttons">
