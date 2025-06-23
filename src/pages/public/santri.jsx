@@ -154,8 +154,8 @@ export default function PublicSantri() {
                         <tr>
                         <th className="fw-semibold">No.</th>
                         <th className="fw-semibold">Nama Santri</th>
-                        <th className="fw-semibold">Email</th>
-                        <th className="fw-semibold">Jenjang</th>
+                        <th className="fw-semibold">Alamat</th>
+                        <th className="fw-semibold">Nomor Hp</th>
                         <th className="fw-semibold">Umur</th>
                         </tr>
                     </thead>
