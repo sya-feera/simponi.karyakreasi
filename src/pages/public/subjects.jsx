@@ -246,7 +246,7 @@ export default function Penjadwalan() {
                     <tr>
                       <th className="fw-semibold">No.</th>
                       <th className="fw-semibold">Mata Pelajaran</th>
-                      <th className="fw-semibold">Jam</th>
+                      {/* <th className="fw-semibold">Jam</th> */}
                       <th className="fw-semibold">Kelas</th>
                       <th className="fw-semibold">Ruang</th>
                       <th className="fw-semibold">Mudaris</th>
@@ -274,12 +274,12 @@ export default function Penjadwalan() {
                               <span>{grade.subject?.name}</span>
                             </div>
                           </td>
-                          <td>
+                          {/* <td>
                             <span className="badge bg-light text-dark border">
                               <i className="bi bi-clock me-1"></i>
                               {grade.subject?.time}
                             </span>
-                          </td>
+                          </td> */}
                           <td>
                             <span
                               className="badge"
