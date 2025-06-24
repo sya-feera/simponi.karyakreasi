@@ -1,118 +1,131 @@
 import { useEffect, useState } from "react";
-import {getDormAssignments, createDormAssignment, updateDormAssignment, deleteDormAssignment,} from "../../_services/dormAssignment";
+import {
+  getDormAssignments,
+  createDormAssignment,
+  updateDormAssignment,
+  deleteDormAssignment,
+} from "../../_services/dormAssignment";
 import { getDorms } from "../../_services/dorms";
 import { getSantri } from "../../_services/santri";
 import AdminLayout from "../../layouts/AdminLayout";
 
-
 export default function DormAssignment() {
-    const [assignments, setAssignments] = useState([]);
-    const [dorms, setDorms] = useState([]);
-    const [santris, setSantris] = useState([]);
-    const [formData, setFormData] = useState({
+  const [assignments, setAssignments] = useState([]);
+  const [dorms, setDorms] = useState([]);
+  const [santris, setSantris] = useState([]);
+  const [formData, setFormData] = useState({
+    santri_id: "",
+    dorm_id: "",
+    room_number: "",
+    assigned_date: "",
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const [assignmentsData, dormsData, santrisData] = await Promise.all([
+        getDormAssignments(),
+        getDorms(),
+        getSantri(),
+      ]);
+      setAssignments(assignmentsData);
+      setDorms(dormsData);
+      setSantris(santrisData);
+    }
+    fetchData();
+  }, []);
+
+  const getDormName = (id) => {
+    const dorm = dorms.find((d) => d.id === id);
+    return dorm ? dorm.name : "-";
+  };
+
+  const getSantriName = (id) => {
+    const santri = santris.find((s) => s.id === id);
+    return santri ? santri.name : "-";
+  };
+
+  // Hitung jumlah penghuni per dorm
+  const countAssignedInDorm = (dorm_id) => {
+    const now = new Date();
+    return assignments.filter(
+      (a) =>
+        a.dorm_id === dorm_id && (!a.exit_date || new Date(a.exit_date) > now)
+    ).length;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((f) => ({ ...f, [name]: value }));
+  };
+
+  const resetForm = () => {
+    setFormData({
       santri_id: "",
       dorm_id: "",
-      room_number: "",
-      assigned_date: "", 
+      entry_date: "",
+      exit_date: "",
     });
-    const [isEditing, setIsEditing] = useState(false);
-    const [editId, setEditId] = useState(null);
-  
-    useEffect(() => {
-      async function fetchData() {
-        const [assignmentsData, dormsData, santrisData] = await Promise.all([
-          getDormAssignments(),
-          getDorms(),
-          getSantri(),
-        ]);
-        setAssignments(assignmentsData);
-        setDorms(dormsData);
-        setSantris(santrisData);
+    setIsEditing(false);
+    setEditId(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const dormCapacity =
+        dorms.find((d) => d.id === Number(formData.dorm_id))?.capacity || 0;
+      const assignedCount = assignments.filter(
+        (a) =>
+          a.dorm_id === Number(formData.dorm_id) &&
+          (!a.exit_date || new Date(a.exit_date) > new Date()) &&
+          (!isEditing || a.id !== editId)
+      ).length;
+
+      if (!isEditing && assignedCount >= dormCapacity) {
+        alert("Kapasitas asrama sudah penuh, tidak bisa menambah penempatan.");
+        return;
       }
-      fetchData();
-    }, []);
-  
-    const getDormName = (id) => {
-      const dorm = dorms.find((d) => d.id === id);
-      return dorm ? dorm.name : "-";
-    };
-  
-    const getSantriName = (id) => {
-      const santri = santris.find((s) => s.id === id);
-      return santri ? santri.name : "-";
-    };
-  
-    // Hitung jumlah penghuni per dorm
-    const countAssignedInDorm = (dorm_id) => {
-      return assignments.filter((a) => a.dorm_id === dorm_id).length;
-    };
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((f) => ({ ...f, [name]: value }));
-    };
-  
-    const resetForm = () => {
-      setFormData({
-        santri_id: "",
-        dorm_id: "",
-        entry_date: "",
-        exit_date: "",
-      });
-      setIsEditing(false);
-      setEditId(null);
-    };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-    
-      try {
-        const dormCapacity = dorms.find(d => d.id === Number(formData.dorm_id))?.capacity || 0;
-        const assignedCount = assignments.filter(a => a.dorm_id === Number(formData.dorm_id) && (!isEditing || a.id !== editId)).length;
-    
-        if (!isEditing && assignedCount >= dormCapacity) {
-          alert("Kapasitas asrama sudah penuh, tidak bisa menambah penempatan.");
-          return;
-        }
-    
-        if (isEditing) {
-          await updateDormAssignment(editId, { ...formData, _method: 'PUT' });
-        } else {
-          await createDormAssignment(formData);
-        }        
-    
-        const assignmentsData = await getDormAssignments();
-        setAssignments(assignmentsData);
-    
-        resetForm();
-      } catch (err) {
-        console.error(err);
-        alert("Gagal menyimpan data");
+
+      if (isEditing) {
+        await updateDormAssignment(editId, { ...formData, _method: "PUT" });
+      } else {
+        await createDormAssignment(formData);
       }
-    };    
-  
-    const handleEdit = (assignment) => {
-      setFormData({
-        santri_id: assignment.santri_id,
-        dorm_id: assignment.dorm_id,
-        entry_date: assignment.entry_date || "",
-        exit_date: assignment.exit_date || "",
-      });
-      setIsEditing(true);
-      setEditId(assignment.id);
-    };
-    
-  
-    const handleDelete = async (id) => {
-      if (!window.confirm("Yakin ingin menghapus data ini?")) return;
-      try {
-        await deleteDormAssignment(id);
-        setAssignments(assignments.filter((a) => a.id !== id));
-      } catch (err) {
-        console.error(err);
-        alert("Gagal menghapus data");
-      }
-    };
+
+      const assignmentsData = await getDormAssignments();
+      setAssignments(assignmentsData);
+
+      resetForm();
+    } catch (err) {
+      console.error(err);
+      alert("Gagal menyimpan data");
+    }
+  };
+
+  const handleEdit = (assignment) => {
+    setFormData({
+      santri_id: assignment.santri_id,
+      dorm_id: assignment.dorm_id,
+      entry_date: assignment.entry_date || "",
+      exit_date: assignment.exit_date || "",
+    });
+    setIsEditing(true);
+    setEditId(assignment.id);
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Yakin ingin menghapus data ini?")) return;
+    try {
+      await deleteDormAssignment(id);
+      setAssignments(assignments.filter((a) => a.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Gagal menghapus data");
+    }
+  };
 
   return (
     <>
@@ -727,8 +740,8 @@ export default function DormAssignment() {
         }
       `}</style>
 
-      <AdminLayout currentPage="/pembagian-kamar" >
-        <nav className="navbar">         
+      <AdminLayout currentPage="/pembagian-kamar">
+        <nav className="navbar">
           <h1>Pembagian Kamar Asrama</h1>
           <div className="profile">
             <img src="https://i.pravatar.cc/40" alt="User Profile" />
@@ -739,7 +752,8 @@ export default function DormAssignment() {
         <div className="page-header fade-in">
           <h2>Manajemen Data Pembagian Kamar Asrama</h2>
           <p>
-            Kelola data pembagian kamar asrama pondok pesantren dengan mudah dan terorganisir
+            Kelola data pembagian kamar asrama pondok pesantren dengan mudah dan
+            terorganisir
           </p>
         </div>
 
@@ -748,22 +762,22 @@ export default function DormAssignment() {
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="santri_id">Nama Santri</label>
-                <select 
+                <select
                   id="santri_id"
-                  name="santri_id" 
-                  value={formData.santri_id} 
-                  onChange={handleChange} 
+                  name="santri_id"
+                  value={formData.santri_id}
+                  onChange={handleChange}
                   required
                 >
                   <option value="">Pilih Santri</option>
-                  {santris.map(santri => (
+                  {santris.map((santri) => (
                     <option key={santri.id} value={santri.id}>
                       {santri.name}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="dorm_id">Asrama</label>
                 <select
@@ -776,12 +790,13 @@ export default function DormAssignment() {
                   <option value="">---Pilih Asrama---</option>
                   {dorms.map((d) => (
                     <option key={d.id} value={d.id}>
-                      {d.name} (Kapasitas: {d.capacity}, Terisi: {countAssignedInDorm(d.id)})
+                      {d.name} (Kapasitas: {d.capacity}, Terisi:{" "}
+                      {countAssignedInDorm(d.id)})
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="entry_date">Tanggal Masuk</label>
                 <input
@@ -805,7 +820,7 @@ export default function DormAssignment() {
                 />
               </div>
             </div>
-            
+
             <button type="submit" className="btn-primary">
               {isEditing ? "Update Penempatan" : "Tambah Penempatan"}
             </button>
